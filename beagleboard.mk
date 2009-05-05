@@ -1,7 +1,3 @@
-PRODUCT_PACKAGES := \
-	Quake \
-	SdkSetup
-
 $(call inherit-product, build/target/product/generic.mk)
 
 # Overrides
