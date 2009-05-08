@@ -80,8 +80,9 @@ on boot
 # Set timeout value for rmnet stats.
     write /sys/devices/virtual/net/rmnet0/timeout_suspend 5000000
 
-# No battery hardware present
+# Hardware features
     setprop hw.nobattery true
+    setprop hw.nophone true
 
 # Define the oom_adj values for the classes of processes that can be
 # killed by the kernel.  These are used in ActivityManagerService.
