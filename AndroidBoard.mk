@@ -15,3 +15,8 @@ $(file): $(LOCAL_PATH)/init.rc | $(ACP)
 	$(transform-prebuilt-to-target)
 ALL_PREBUILT += $(file)
 endif
+
+file := $(TARGET_OUT_KEYLAYOUT)/qwerty.kl
+ALL_PREBUILT += $(file)
+$(file) : $(LOCAL_PATH)/qwerty.kl | $(ACP)
+	$(transform-prebuilt-to-target)
