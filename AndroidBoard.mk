@@ -16,7 +16,11 @@ $(file): $(LOCAL_PATH)/init.rc | $(ACP)
 ALL_PREBUILT += $(file)
 endif
 
-file := $(TARGET_OUT_KEYLAYOUT)/qwerty.kl
+file := $(TARGET_OUT_KEYLAYOUT)/usbkbd.kl
 ALL_PREBUILT += $(file)
-$(file) : $(LOCAL_PATH)/qwerty.kl | $(ACP)
+$(file) : $(LOCAL_PATH)/usbkbd.kl | $(ACP)
 	$(transform-prebuilt-to-target)
+
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := usbkbd.kcm
+include $(BUILD_KEY_CHAR_MAP)
