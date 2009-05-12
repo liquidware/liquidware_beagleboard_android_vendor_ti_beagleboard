@@ -35,3 +35,5 @@ $(file): $(LOCAL_PATH)/asound.conf | $(ACP)
 ALL_PREBUILT += $(file)
 endif
 endif
+
+include frameworks/base/data/sounds/OriginalAudio.mk
