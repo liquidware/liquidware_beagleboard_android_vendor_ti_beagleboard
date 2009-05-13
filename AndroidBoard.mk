@@ -25,6 +25,11 @@ include $(CLEAR_VARS)
 LOCAL_SRC_FILES := usbkbd.kcm
 include $(BUILD_KEY_CHAR_MAP)
 
+file := $(TARGET_ROOT_OUT)/system/media/audio/ui/boot.wav
+$(file): $(LOCAL_PATH)/boot.wav | $(ACP)
+	$(transform-prebuilt-to-target)
+ALL_PREBUILT += $(file)
+
 ifeq ($(strip $(BOARD_USES_ALSA_AUDIO)),true)
 ifeq ($(wildcard $(LOCAL_PATH)/asound.conf),)
 $(error $(LOCAL_PATH)/asound.conf not found, create one for your hardware)
