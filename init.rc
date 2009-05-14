@@ -214,6 +214,8 @@ service vold /system/bin/vold
 
 service debuggerd /system/bin/debuggerd
 
+service vtsd /system/bin/vtsd
+
 service ril-daemon /system/bin/rild
     socket rild stream 660 root radio
     socket rild-debug stream 660 radio system
