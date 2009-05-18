@@ -94,8 +94,8 @@ on boot
 # Hardware features
     setprop hw.nobattery true
     setprop hw.nophone true
-    setprop hw.keylayout.65536 usbkbd
-    setprop hw.keycharmap.0 usbkbd
+    setprop hw.keylayout usbkbd
+    setprop hw.keycharmap usbkbd
 
 # GPU not supported
     setprop debug.egl.hw 0
