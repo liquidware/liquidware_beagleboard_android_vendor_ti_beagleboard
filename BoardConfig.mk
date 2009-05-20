@@ -1,0 +1,8 @@
+# Beagleboard configuration
+
+TARGET_NO_BOOTLOADER := true
+TARGET_NO_KERNEL := true
+TARGET_NO_RADIOIMAGE := true
+USE_CAMERA_STUB := true
+BOARD_USES_GENERIC_AUDIO := true
+#BOARD_USES_ALSA_AUDIO := true
