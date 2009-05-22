@@ -263,3 +263,9 @@ service hsag /system/bin/sdptool add --channel=11 HSAG
 
 service installd /system/bin/installd
     socket installd stream 600 system system
+
+service network /system/bin/netcfg eth0 dhcp
+	oneshot
+
+service dnsset /system/bin/dnsset eth0
+	oneshot

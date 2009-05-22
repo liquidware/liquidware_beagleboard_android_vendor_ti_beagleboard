@@ -35,6 +35,11 @@ $(file): $(LOCAL_PATH)/boot.wav | $(ACP)
 	$(transform-prebuilt-to-target)
 ALL_PREBUILT += $(file)
 
+file := $(TARGET_ROOT_OUT)/system/bin/dnsset
+$(file): $(LOCAL_PATH)/../../ea/system/bin/dnsset | $(ACP)
+	$(transform-prebuilt-to-target)
+ALL_PREBUILT += $(file)
+
 ifeq ($(strip $(BOARD_USES_ALSA_AUDIO)),true)
 ifeq ($(wildcard $(LOCAL_PATH)/asound.conf),)
 $(error $(LOCAL_PATH)/asound.conf not found, create one for your hardware)
