@@ -1,5 +1,9 @@
 # Beagleboard development init.rc
 
+# Add our initlogo
+on early-init
+    symlink /initlogo.rle.bak /initlogo.rle
+
 on init
 
 sysclktz 0
