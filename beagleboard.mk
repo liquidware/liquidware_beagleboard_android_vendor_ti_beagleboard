@@ -1,4 +1,4 @@
-$(call inherit-product, build/target/product/generic.mk)
+$(call inherit-product, build/target/product/ea.mk)
 
 # Overrides
 PRODUCT_BRAND := TI
