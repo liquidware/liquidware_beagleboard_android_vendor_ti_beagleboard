@@ -1,5 +1,8 @@
 $(call inherit-product, build/target/product/ea.mk)
 
+PRODUCT_PACKAGES := \
+     SoundRecorder
+
 # Overrides
 PRODUCT_BRAND := TI
 PRODUCT_NAME := beagleboard
