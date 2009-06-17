@@ -7,4 +7,4 @@ PRODUCT_PACKAGES := \
 PRODUCT_BRAND := TI
 PRODUCT_NAME := beagleboard
 PRODUCT_DEVICE := beagleboard
-PRODUCT_PACKAGE_OVERLAYS := vendor/ea
+PRODUCT_PACKAGE_OVERLAYS := vendor/ea/generic
