@@ -36,7 +36,7 @@ $(file): $(LOCAL_PATH)/boot.wav | $(ACP)
 ALL_PREBUILT += $(file)
 
 file := $(TARGET_ROOT_OUT)/system/bin/dnsset
-$(file): $(LOCAL_PATH)/../../ea/system/bin/dnsset | $(ACP)
+$(file): $(LOCAL_PATH)/../../ea/generic/system/bin/dnsset | $(ACP)
 	$(transform-prebuilt-to-target)
 ALL_PREBUILT += $(file)
 
