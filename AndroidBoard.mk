@@ -16,38 +16,32 @@ $(file): $(LOCAL_PATH)/init.rc | $(ACP)
 ALL_PREBUILT += $(file)
 endif
 
-file := $(TARGET_OUT_KEYLAYOUT)/usbkbd.kl
-ALL_PREBUILT += $(file)
-$(file) : $(LOCAL_PATH)/usbkbd.kl | $(ACP)
-	$(transform-prebuilt-to-target)
+# keyboard
+PRODUCT_COPY_FILES += \
+	$(LOCAL_PATH)/usbkbd.kl:system/usr/keylayout/usbkbd.kl
 
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := usbkbd.kcm
 include $(BUILD_KEY_CHAR_MAP)
 
-file := $(TARGET_ROOT_OUT)/system/etc/vold.conf
-$(file): $(LOCAL_PATH)/vold.conf | $(ACP)
-	$(transform-prebuilt-to-target)
-ALL_PREBUILT += $(file)
+# vold.conf
+PRODUCT_COPY_FILES += \
+	$(LOCAL_PATH)/vold.conf:system/etc/vold.conf
 
-file := $(TARGET_ROOT_OUT)/system/media/audio/ui/boot.wav
-$(file): $(LOCAL_PATH)/boot.wav | $(ACP)
-	$(transform-prebuilt-to-target)
-ALL_PREBUILT += $(file)
+# Bootsound
+PRODUCT_COPY_FILES += \
+	$(LOCAL_PATH)/boot.wav:system/media/audio/ui/boot.wav
 
-file := $(TARGET_ROOT_OUT)/system/bin/dnsset
-$(file): $(LOCAL_PATH)/../../ea/generic/system/bin/dnsset | $(ACP)
-	$(transform-prebuilt-to-target)
-ALL_PREBUILT += $(file)
+# Ethernet
+PRODUCT_COPY_FILES += \
+	$(LOCAL_PATH)/../../ea/generic/system/bin/dnsset:system/bin/dnsset
 
 ifeq ($(strip $(BOARD_USES_ALSA_AUDIO)),true)
 ifeq ($(wildcard $(LOCAL_PATH)/asound.conf),)
 $(error $(LOCAL_PATH)/asound.conf not found, create one for your hardware)
 else
-file := $(TARGET_ROOT_OUT)/system/etc/asound.conf
-$(file): $(LOCAL_PATH)/asound.conf | $(ACP)
-	$(transform-prebuilt-to-target)
-ALL_PREBUILT += $(file)
+PRODUCT_COPY_FILES += \
+	$(LOCAL_PATH)/asound.conf:system/etc/asound.conf
 endif
 endif
 
