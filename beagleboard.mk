@@ -1,7 +1,7 @@
-$(call inherit-product, build/target/product/ea.mk)
-
 PRODUCT_PACKAGES := \
      SoundRecorder
+
+$(call inherit-product, build/target/product/ea.mk)
 
 # Overrides
 PRODUCT_BRAND := TI
