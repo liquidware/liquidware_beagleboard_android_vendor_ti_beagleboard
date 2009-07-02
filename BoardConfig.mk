@@ -9,6 +9,7 @@ BOARD_USES_ALSA_AUDIO := true
 BUILD_WITH_ALSA_UTILS := true
 BOARD_USES_VIRTUAL_TOUCHSCREEN := true
 BOARD_USES_OMAP3_LIGHTS := true
+BOARD_HAS_ARM_TLS_REG := true
 
 # Setup some runtime system properties.
 TARGET_BOARD_PLATFORM := omap3
