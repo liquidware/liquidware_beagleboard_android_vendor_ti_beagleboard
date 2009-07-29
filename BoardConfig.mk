@@ -16,3 +16,4 @@ USE_CUSTOM_SURFACEFLINGER_HEAP_MAX := 16
 # Setup some runtime system properties.
 TARGET_BOARD_PLATFORM := omap3
 TARGET_BOOTLOADER_BOARD_NAME := beagleboard
+TARGET_CPU_ABI := armeabi
