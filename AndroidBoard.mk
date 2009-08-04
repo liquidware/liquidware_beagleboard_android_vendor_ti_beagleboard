@@ -18,11 +18,7 @@ endif
 
 # keyboard
 PRODUCT_COPY_FILES += \
-	$(LOCAL_PATH)/usbkbd.kl:system/usr/keylayout/usbkbd.kl
-
-include $(CLEAR_VARS)
-LOCAL_SRC_FILES := usbkbd.kcm
-include $(BUILD_KEY_CHAR_MAP)
+	$(LOCAL_PATH)../../ea/generic/keyboards/usbkbd.kl:system/usr/keylayout/qwerty.kl
 
 # vold.conf
 PRODUCT_COPY_FILES += \
