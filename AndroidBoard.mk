@@ -18,7 +18,7 @@ endif
 
 # keyboard
 PRODUCT_COPY_FILES += \
-	$(LOCAL_PATH)../../ea/generic/keyboards/usbkbd.kl:system/usr/keylayout/qwerty.kl
+	$(LOCAL_PATH)/../../ea/generic/keyboards/usbkbd.kl:system/usr/keylayout/qwerty.kl
 
 # vold.conf
 PRODUCT_COPY_FILES += \
