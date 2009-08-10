@@ -28,10 +28,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/boot.wav:system/media/audio/ui/boot.wav
 
-# Ethernet
-PRODUCT_COPY_FILES += \
-	$(LOCAL_PATH)/../../ea/generic/system/bin/dnsset:system/bin/dnsset
-
 ifeq ($(strip $(BOARD_USES_ALSA_AUDIO)),true)
 ifeq ($(wildcard $(LOCAL_PATH)/asound.conf),)
 $(error $(LOCAL_PATH)/asound.conf not found, create one for your hardware)

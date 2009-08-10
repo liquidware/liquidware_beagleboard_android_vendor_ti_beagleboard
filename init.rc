@@ -304,7 +304,7 @@ service hsag /system/bin/sdptool add --channel=11 HSAG
 service installd /system/bin/installd
     socket installd stream 600 system system
 
-service dnsset /system/bin/dnsset eth0
+service ethmonitor /system/bin/ethmonitor eth0
 	oneshot
 
 service racoon /system/bin/racoon
