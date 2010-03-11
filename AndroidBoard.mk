@@ -18,7 +18,7 @@ endif
 
 # keyboard
 PRODUCT_COPY_FILES += \
-	$(LOCAL_PATH)/../../ea/generic/keyboards/usbkbd-no-pm.kl:system/usr/keylayout/qwerty.kl
+	$(LOCAL_PATH)/../../rowboat/generic/keyboards/usbkbd-no-pm.kl:system/usr/keylayout/qwerty.kl
 
 # vold.conf
 PRODUCT_COPY_FILES += \
@@ -27,6 +27,10 @@ PRODUCT_COPY_FILES += \
 # Bootsound
 PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/boot.wav:system/media/audio/ui/boot.wav
+
+# initlogo
+PRODUCT_COPY_FILES += \
+$(LOCAL_PATH)/../../rowboat/generic/initlogo/ea-blue-on-white-large-1024x768.rle:root/initlogo.rle.bak
 
 ifeq ($(strip $(BOARD_USES_ALSA_AUDIO)),true)
 ifeq ($(wildcard $(LOCAL_PATH)/asound.conf),)

@@ -22,13 +22,10 @@ loglevel 3
 
 # Backward compatibility
     symlink /system/etc /etc
+    symlink /sys/kernel/debug /d
+
 
 # ALSA support
-    mkdir /dev/snd 0777 system system
-    symlink /dev/controlC0 /dev/snd/controlC0
-    symlink /dev/pcmC0D0p  /dev/snd/pcmC0D0p
-    symlink /dev/pcmC0D0c  /dev/snd/pcmC0D0c
-    symlink /dev/timer     /dev/snd/timer
     chmod 0777 /dev/snd/controlC0
     chmod 0777 /dev/snd/pcmC0D0p
     chmod 0777 /dev/snd/pcmC0D0c
@@ -39,6 +36,7 @@ loglevel 3
     mkdir /system
     mkdir /data 0771 system system
     mkdir /cache 0770 system cache
+    mkdir /config 0500 root root
     mkdir /sqlite_stmt_journals 01777 root root
     mount tmpfs tmpfs /sqlite_stmt_journals size=4m
 
@@ -48,6 +46,7 @@ loglevel 3
     write /proc/sys/kernel/sched_latency_ns 10000000
     write /proc/sys/kernel/sched_wakeup_granularity_ns 2000000
     write /proc/sys/kernel/sched_compat_yield 1
+    write /proc/sys/kernel/sched_child_runs_first 0
 
 # Create cgroup mount points for process groups
     mkdir /dev/cpuctl
@@ -65,11 +64,32 @@ loglevel 3
     mkdir /dev/cpuctl/bg_non_interactive
     chown system system /dev/cpuctl/bg_non_interactive/tasks
     chmod 0777 /dev/cpuctl/bg_non_interactive/tasks
-    write /dev/cpuctl/bg_non_interactive/cpu.shares 16
+    # 5.0 %
+    write /dev/cpuctl/bg_non_interactive/cpu.shares 52
 
     chown system system /data
     chmod 0771 /data
 
+    # Create dump dir and collect dumps.
+    # Do this before we mount cache so eventually we can use cache for
+    # storing dumps on platforms which do not have a dedicated dump partition.
+   
+    mkdir /data/dontpanic
+    chown root log /data/dontpanic
+    chmod 0750 /data/dontpanic
+
+    # Collect apanic data, free resources and re-arm trigger
+    copy /proc/apanic_console /data/dontpanic/apanic_console
+    chown root log /data/dontpanic/apanic_console
+    chmod 0640 /data/dontpanic/apanic_console
+
+    copy /proc/apanic_threads /data/dontpanic/apanic_threads
+    chown root log /data/dontpanic/apanic_threads
+    chmod 0640 /data/dontpanic/apanic_threads
+
+    write /proc/apanic_console 1
+
+    # Same reason as /data above
     chown system cache /cache
     chmod 0770 /cache
 
@@ -77,10 +97,14 @@ loglevel 3
     chown system system /cache/recovery
     chmod 0770 /cache/recovery
 
+    #change permissions on vmallocinfo so we can grab it from bugreports
+    chown root log /proc/vmallocinfo
+    chmod 0440 /proc/vmallocinfo
+
 # create basic filesystem structure
     mkdir /data/misc 01771 system misc
-    mkdir /data/misc/hcid 0770 bluetooth bluetooth
-    mkdir /data/misc/keystore 0770 keystore keystore
+    mkdir /data/misc/bluetoothd 0770 bluetooth bluetooth
+    mkdir /data/misc/keystore 0700 keystore keystore
     mkdir /data/misc/vpn 0770 system system
     mkdir /data/misc/vpn/profiles 0770 system system
     # give system access to wpa_supplicant.conf for backup and restore
@@ -94,10 +118,15 @@ loglevel 3
     mkdir /data/app 0771 system system
     mkdir /data/property 0700 root root
 
+
     # create dalvik-cache and double-check the perms
     mkdir /data/dalvik-cache 0771 system system
     chown system system /data/dalvik-cache
     chmod 0771 /data/dalvik-cache
+
+	# make sure the keychar files have correct permissions
+	chmod 0644 /system/usr/keychars/qwerty.kcm.bin
+	chmod 0644 /system/usr/keychars/qwerty2.kcm.bin
 
     # create the lost+found directories, so as to enforce our permissions
     mkdir /data/lost+found 0770
@@ -118,14 +147,13 @@ on boot
 # set RLIMIT_NICE to allow priorities from 19 to -20
     setrlimit 13 40 40
 
-# Hardware features
+# No battery hardware present
     setprop hw.nobattery true
     setprop hw.nophone true
+
+# Use USB keyboard layout
     setprop hw.keylayout usbkbd
     setprop hw.keycharmap usbkbd
-
-# GPU not supported
-    setprop debug.egl.hw 0
 
 # Define the oom_adj values for the classes of processes that can be
 # killed by the kernel.  These are used in ActivityManagerService.
@@ -160,6 +188,10 @@ on boot
 
     # Set init its forked children's oom_adj.
     write /proc/1/oom_adj -16
+
+    # Tweak background writeout
+    write /proc/sys/vm/dirty_expire_centisecs 200
+    write /proc/sys/vm/dirty_background_ratio  5
 
     # Permissions for System Server and daemons.
     chown radio system /sys/android_power/state
@@ -247,27 +279,26 @@ service nexus /system/bin/nexus
 
 service debuggerd /system/bin/debuggerd
 
-service vtsd /system/bin/vtsd
-
 service ril-daemon /system/bin/rild
     socket rild stream 660 root radio
     socket rild-debug stream 660 radio system
     user root
-    group radio cache inet misc
+    group radio cache inet misc audio
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
     socket zygote stream 666
     onrestart write /sys/android_power/request_state wake
     onrestart write /sys/power/state on
+    onrestart restart media
 
 service media /system/bin/mediaserver
     user media
     group system audio camera graphics inet net_bt net_bt_admin
 
-#service bootsound /system/bin/alsa_aplay /system/media/audio/ui/boot.wav
-#    user media
-#    group audio
-#    oneshot
+service bootsound /system/bin/playmp3
+    user media
+    group audio
+    oneshot
 
 service bootanim /system/bin/bootanimation
     user graphics
@@ -280,11 +311,11 @@ service dbus /system/bin/dbus-daemon --system --nofork
     user bluetooth
     group bluetooth net_bt_admin
 
-service hcid /system/bin/hcid -s -n -f /etc/bluez/hcid.conf
+service bluetoothd /system/bin/bluetoothd -n
     socket bluetooth stream 660 bluetooth bluetooth
     socket dbus_bluetooth stream 660 bluetooth bluetooth
     # init.rc does not yet support applying capabilities, so run as root and
-    # let hcid drop uid to bluetooth with the right linux capabilities
+    # let bluetoothd drop uid to bluetooth with the right linux capabilities
     group bluetooth net_bt_admin misc
     disabled
 
@@ -300,15 +331,28 @@ service hsag /system/bin/sdptool add --channel=11 HSAG
     disabled
     oneshot
 
+service opush /system/bin/sdptool add --channel=12 OPUSH
+    user bluetooth
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
+service pbap /system/bin/sdptool add --channel=19 PBAP
+    user bluetooth
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
 service installd /system/bin/installd
     socket installd stream 600 system system
 
-service ethmonitor /system/bin/ethmonitor eth0
+service flash_recovery /system/etc/install-recovery.sh
+    oneshot
 
 service racoon /system/bin/racoon
     socket racoon stream 600 system system
     # racoon will setuid to vpn after getting necessary resources.
-    group net_admin keystore
+    group net_admin
     disabled
     oneshot
 
@@ -319,7 +363,12 @@ service mtpd /system/bin/mtpd
     disabled
     oneshot
 
-service keystore /system/bin/keystore
+service keystore /system/bin/keystore /data/misc/keystore
     user keystore
     group keystore
     socket keystore stream 666
+
+service dumpstate /system/bin/dumpstate -s
+    socket dumpstate stream 0660 shell log
+    disabled
+    oneshot
