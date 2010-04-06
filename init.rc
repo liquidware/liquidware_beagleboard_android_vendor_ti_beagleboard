@@ -155,6 +155,9 @@ on boot
     setprop hw.keylayout usbkbd
     setprop hw.keycharmap usbkbd
 
+# Disable powermanagement
+    setprop hw.nopm	true
+
 # Define the oom_adj values for the classes of processes that can be
 # killed by the kernel.  These are used in ActivityManagerService.
     setprop ro.FOREGROUND_APP_ADJ 0
