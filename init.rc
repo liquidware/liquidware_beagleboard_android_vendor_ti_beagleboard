@@ -25,6 +25,9 @@ loglevel 3
     symlink /sys/kernel/debug /d
 
 
+    write /sys/power/wake_lock true
+    setprop hw.nopm true
+
 # ALSA support
     chmod 0777 /dev/snd/controlC0
     chmod 0777 /dev/snd/pcmC0D0p
