@@ -1,5 +1,8 @@
 PRODUCT_PACKAGES := \
-     SoundRecorder
+        SoundRecorder \
+        GeneralRunner \
+        EvilSkull \
+        Vase
 
 $(call inherit-product, build/target/product/rowboat.mk)
 
