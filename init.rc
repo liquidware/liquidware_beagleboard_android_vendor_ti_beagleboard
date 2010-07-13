@@ -104,6 +104,16 @@ loglevel 3
     chown root log /proc/vmallocinfo
     chmod 0440 /proc/vmallocinfo
 
+# change permissions for Overlay
+    chmod 0777 /dev/video1
+    chmod 0777 /dev/video2
+    chmod 0777 /dev/omap-resizer
+    chmod 0777 /sys/devices/platform/omapfb/overlays
+    chmod 0777 /sys/devices/platform/omapfb/displays
+    chmod 0777 /sys/devices/platform/omapfb/framebuffers
+    chmod 0777 /sys/devices/platform/omapfb/managers
+    chmod 0777 /sys/devices/platform/omapfb/graphics
+
 # create basic filesystem structure
     mkdir /data/misc 01771 system misc
     mkdir /data/misc/bluetoothd 0770 bluetooth bluetooth
