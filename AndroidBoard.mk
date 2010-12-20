@@ -30,7 +30,11 @@ PRODUCT_COPY_FILES += \
 
 # initlogo
 PRODUCT_COPY_FILES += \
-$(LOCAL_PATH)/../../rowboat/generic/initlogo/ea-blue-on-white-large-1024x768.rle:root/initlogo.rle.bak
+    $(LOCAL_PATH)/../../rowboat/generic/initlogo/ea-blue-on-white-large-1024x768.rle:root/initlogo.rle.bak
+
+# Install and Burn Makefile
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/out_target_product_beagleboard_Makefile:Makefile
 
 ifeq ($(strip $(BOARD_USES_ALSA_AUDIO)),true)
 ifeq ($(wildcard $(LOCAL_PATH)/asound.conf),)

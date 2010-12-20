@@ -1,0 +1,46 @@
+.PHONY: all
+
+clean:
+	rm -rf ./android_rootfs/*;
+	rm -rf ./root
+	rm -rf ./system
+	rm rootfs.tar.bz2
+		
+all:
+
+install:
+	- rm -rf ./android_rootfs
+	mkdir ./android_rootfs
+	cp -r ./root/* android_rootfs/; cp -r system android_rootfs/
+
+	@echo "Install 3D Graphics Drivers"
+	make -C ./OMAP35x_Android_Graphics_SDK_3_01_00_03 install OMAPES=3.x
+
+	@echo "Image `du -sh ./android_rootfs`"
+	@echo "Image building rootfs tarball..."; ../../../../build/tools/mktarball.sh ../../../host/linux-x86/bin/fs_get_stats android_rootfs . rootfs rootfs.tar.bz2
+	@echo "Image `du -sh rootfs.tar.bz2`"
+	@echo "Image `pwd`/rootfs.tar.bz2 is ready";
+
+burn:
+	@echo " "	
+	@echo "Burning image to ${DEVICE}"
+	
+	- umount /dev/${DEVICE}1
+	- mkdir /tmp/${DEVICE}1
+	- umount /dev/${DEVICE}2
+	- mkdir /tmp/${DEVICE}2
+	
+	@echo " "
+	@echo "Copying Kernel Image..."
+	mount /dev/${DEVICE}1 /tmp/${DEVICE}1
+	cp ../../../../kernel/arch/arm/boot/uImage /tmp/${DEVICE}1
+	umount /dev/${DEVICE}1
+	
+	@echo " "
+	@echo "Extracting RootFS..."
+	mount /dev/${DEVICE}2 /tmp/${DEVICE}2
+	tar jxf ./rootfs.tar.bz2 --numeric-owner -C /tmp/${DEVICE}2
+	umount /dev/${DEVICE}2
+	
+	@echo " "
+	@echo "Burn Complete."
