@@ -2,7 +2,13 @@ PRODUCT_PACKAGES := \
         SoundRecorder \
         GeneralRunner \
         EvilSkull \
-        Vase
+        Tscalibration \
+        Vase \
+        com.chartcross.gpstest \
+        GPSStatus \
+        Bar_Control \
+        SerialMonitor \
+        
 
 $(call inherit-product, build/target/product/rowboat.mk)
 

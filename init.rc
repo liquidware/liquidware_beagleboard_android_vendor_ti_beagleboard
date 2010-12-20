@@ -115,18 +115,55 @@ loglevel 3
     mkdir /data/misc/keystore 0700 keystore keystore
     mkdir /data/misc/vpn 0770 system system
     mkdir /data/misc/vpn/profiles 0770 system system
-    # give system access to wpa_supplicant.conf for backup and restore
-    mkdir /data/misc/wifi 0770 wifi wifi
-    chmod 0770 /data/misc/wifi
-    chmod 0660 /data/misc/wifi/wpa_supplicant.conf
     mkdir /data/local 0771 shell shell
     mkdir /data/local/tmp 0771 shell shell
     mkdir /data/data 0771 system system
     mkdir /data/app-private 0771 system system
     mkdir /data/app 0771 system system
     mkdir /data/property 0700 root root
+    
+    # WiFi filesystem structure
 
+    # Give system access to wpa_supplicant.conf for backup and restore
+    mkdir /data/misc/wifi 0770 wifi wifi
+    chmod 0770 /data/misc/wifi
+    chown wifi wifi /data/misc/wifi
+    chmod 0660 /data/misc/wifi/wpa_supplicant.conf
+    chown wifi wifi /data/misc/wifi/wpa_supplicant.conf
+    mkdir /system/etc/wifi 0770 wifi wifi
+    chmod 0660 /system/etc/wifi/wpa_supplicant.conf
+    chown wifi wifi /system/etc/wifi/wpa_supplicant.conf
 
+    # Create the wpa_supplicant socket directory
+    mkdir /data/system/wpa_supplicant 0771 wifi wifi
+    chmod 0771 /data/system/wpa_supplicant
+    chown wifi wifi /data/system/wpa_supplicant
+    mkdir /data/misc/wifi/sockets 0771 wifi wifi
+    chmod 0771 /data/misc/wifi/sockets
+    chown wifi wifi /data/misc/wifi/sockets
+
+    # Give System access to WiFi firmware
+    chmod 0770 /system/etc/firmware
+    chmod 0660 /system/etc/firmware/rt73.bin
+    chown wifi wifi /system/etc/firmware/rt73.bin
+#    insmod /system/lib/modules/rt2x00lib.ko
+#    insmod /system/lib/modules/rt2x00usb.ko
+
+    # DHCPCD
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    chown dhcp dhcp /data/misc/dhcp
+#    chmod 0660 /system/etc/dhcpcd/dhcpcd.conf
+#    chown dhcp dhcp /system/etc/dhcpcd/dhcpcd.conf
+
+    setprop wifi.interface "wlan0"
+    setprop net.wlan0.dns1 ""
+    setprop net.wlan0.dns2 ""
+#    setprop wlan.driver.status "ok"
+#    setprop init.svc.wpa_supplicant "running"
+    setprop ro.kernel.qemu "1"
+#    setprop ro.kernel.android.gps "ttyUSB0"
+	setprop ro.kernel.android.serial "ttyUSB0"
+	
     # create dalvik-cache and double-check the perms
     mkdir /data/dalvik-cache 0771 system system
     chown system system /data/dalvik-cache
@@ -219,6 +256,7 @@ on boot
     chown system system /sys/class/timed_output/vibrator/enable
     chown system system /sys/class/leds/keyboard-backlight/brightness
     chown system system /sys/class/leds/lcd-backlight/brightness
+    chown system system /sys/devices/omapdss/display0/leds/lcd-backlight/brightness
     chown system system /sys/class/leds/button-backlight/brightness
     chown system system /sys/class/leds/jogball-backlight/brightness
     chown system system /sys/class/leds/red/brightness
@@ -242,7 +280,10 @@ on boot
     chown system system /sys/kernel/ipv4/tcp_rmem_def
     chown system system /sys/kernel/ipv4/tcp_rmem_max
     chown root radio /proc/cmdline
-
+#    chmod 0660 /dev/ttyUSB0
+	chmod 0777 /dev/ttyUSB0
+    chown radio radio /dev/ttyUSB0
+    
 # Define TCP buffer sizes for various networks
 #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
     setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
@@ -257,6 +298,9 @@ on boot
 ##
 service console /system/bin/sh
     console
+
+# Start PowerVR SGX DDK, assuming 3D graphics libraries are installed
+service pvr /system/bin/sgx/rc.pvr start
 
 # adbd is controlled by the persist.service.adb.enable system property
 service adbd /sbin/adbd
@@ -381,5 +425,15 @@ service keystore /system/bin/keystore /data/misc/keystore
 
 service dumpstate /system/bin/dumpstate -s
     socket dumpstate stream 0660 shell log
+    disabled
+    oneshot
+
+service wpa_supplicant /system/bin/wpa_supplicant -dd -K -Dwext -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
+    group system wifi inet
+    disabled
+    oneshot
+
+service dhcpcd /system/bin/dhcpcd -dd wlan0
+    group system dhcp
     disabled
     oneshot
