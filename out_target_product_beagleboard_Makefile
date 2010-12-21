@@ -14,8 +14,8 @@ install:
 	cp -r ./root/* android_rootfs/; cp -r system android_rootfs/
 	cp ./android_rootfs/init ./android_rootfs/sbin
 
-	@echo "Install 3D Graphics Drivers"
-	make -C ./OMAP35x_Android_Graphics_SDK_3_01_00_03 install OMAPES=3.x
+#	@echo "Install 3D Graphics Drivers"
+#	make -C ./OMAP35x_Android_Graphics_SDK_3_01_00_03 install OMAPES=3.x
 
 	@echo "Image `du -sh ./android_rootfs`"
 	@echo "Image building rootfs tarball..."; ../../../../build/tools/mktarball.sh ../../../host/linux-x86/bin/fs_get_stats android_rootfs . rootfs rootfs.tar.bz2
