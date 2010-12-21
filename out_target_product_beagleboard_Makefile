@@ -12,6 +12,7 @@ install:
 	- rm -rf ./android_rootfs
 	mkdir ./android_rootfs
 	cp -r ./root/* android_rootfs/; cp -r system android_rootfs/
+	cp ./android_rootfs/init ./android_rootfs/sbin
 
 	@echo "Install 3D Graphics Drivers"
 	make -C ./OMAP35x_Android_Graphics_SDK_3_01_00_03 install OMAPES=3.x
