@@ -2,11 +2,8 @@ PRODUCT_PACKAGES := \
         SoundRecorder \
         GeneralRunner \
         EvilSkull \
-        Tscalibration \
+        TSCalibration \
         Vase \
-        com.chartcross.gpstest \
-        GPSStatus \
-        Bar_Control \
         SerialMonitor \
         
 
